@@ -25,18 +25,18 @@ Pervasive_EPD = pervasive_epd_ns.class_(
 Pervasive_EPD_Model = pervasive_epd_ns.enum("Pervasive_EPD_Model")
 
 MODELS = {
-    "EPD_150_KS_0J": Pervasive_EPD_Model.EPD_150_KS_0J,
-    "EPD_152_KS_0J": Pervasive_EPD_Model.EPD_152_KS_0J,
-    "EPD_154_KS_0C": Pervasive_EPD_Model.EPD_154_KS_0C,
-    "EPD_206_KS_0E": Pervasive_EPD_Model.EPD_206_KS_0E,
-    "EPD_213_KS_0E": Pervasive_EPD_Model.EPD_213_KS_0E,
-    "EPD_266_KS_0C": Pervasive_EPD_Model.EPD_266_KS_0C,
-    "EPD_271_KS_09": Pervasive_EPD_Model.EPD_271_KS_09,
-    "EPD_271_KS_0C": Pervasive_EPD_Model.EPD_271_KS_0C,
-    "EPD_290_KS_0F": Pervasive_EPD_Model.EPD_290_KS_0F,
-    "EPD_370_KS_0C": Pervasive_EPD_Model.EPD_370_KS_0C,
-    "EPD_417_KS_0D": Pervasive_EPD_Model.EPD_417_KS_0D,
-    "EPD_437_KS_0C": Pervasive_EPD_Model.EPD_437_KS_0C,
+    "epd_150_ks_0j": Pervasive_EPD_Model.EPD_150_KS_0J,
+    "epd_152_ks_0j": Pervasive_EPD_Model.EPD_152_KS_0J,
+    "epd_154_ks_0c": Pervasive_EPD_Model.EPD_154_KS_0C,
+    "epd_206_ks_0e": Pervasive_EPD_Model.EPD_206_KS_0E,
+    "epd_213_ks_0e": Pervasive_EPD_Model.EPD_213_KS_0E,
+    "epd_266_ks_0c": Pervasive_EPD_Model.EPD_266_KS_0C,
+    "epd_271_ks_09": Pervasive_EPD_Model.EPD_271_KS_09,
+    "epd_271_ks_0c": Pervasive_EPD_Model.EPD_271_KS_0C,
+    "epd_290_ks_0f": Pervasive_EPD_Model.EPD_290_KS_0F,
+    "epd_370_ks_0c": Pervasive_EPD_Model.EPD_370_KS_0C,
+    "epd_417_ks_0d": Pervasive_EPD_Model.EPD_417_KS_0D,
+    "epd_437_ks_0c": Pervasive_EPD_Model.EPD_437_KS_0C,
 }
 
 
