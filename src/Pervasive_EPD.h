@@ -1,5 +1,5 @@
-#ifndef LIB_ADAFRUIT_SSD1619
-#define LIB_ADAFRUIT_SSD1619
+#ifndef LIB_PERVASIVE_EPD
+#define LIB_PERVASIVE_EPD
 
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
@@ -109,10 +109,6 @@
 
 #define SPI_FREQ 4000000
 
-#define FRAMEBUFFER_TYPE uint8_t *
-//#define FRAMEBUFFER_CONST_TYPE const uint8_t *
-#define FRAMEBUFFER_CONST_TYPE uint8_t *
-
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with SSD1619 EPD drivers
@@ -136,10 +132,6 @@ public:
     void update(void);
     void powerDown();
     void setFastMode(bool fast);
-
-    void updateNormal(FRAMEBUFFER_CONST_TYPE frame, uint32_t sizeFrame);
-    void updateFast(FRAMEBUFFER_CONST_TYPE frame, FRAMEBUFFER_CONST_TYPE frame2, uint32_t sizeFrame);
-
 protected:
     Pervasive_EPD(eScreen_EPD_t eScreen_EPD,
         int width, int height,
@@ -158,6 +150,7 @@ protected:
     bool flagSPI = false; // Some SPI implementations require unique initialisation
     SPISettings _settingScreen;
     bool useFastUpdate;
+    bool isFirstFrame = true;
 
     void beginSPI(uint32_t speed);
     uint8_t readSPI3();
@@ -176,8 +169,8 @@ protected:
     void COG_initial(uint8_t updateMode);
     void COG_update(uint8_t updateMode);
     void COG_stopDCDC();
-    void COG_sendImageDataNormal(FRAMEBUFFER_CONST_TYPE firstFrame, uint32_t sizeFrame); // First frame, blackBuffer
-    void COG_sendImageDataFast(FRAMEBUFFER_CONST_TYPE firstFrame, FRAMEBUFFER_CONST_TYPE secondFrame, uint32_t sizeFrame); // First frame, blackBuffer
+    void COG_sendImageDataNormal(uint8_t* firstFrame, uint32_t sizeFrame); // First frame, blackBuffer
+    void COG_sendImageDataFast(uint8_t* firstFrame, uint8_t* secondFrame, uint32_t sizeFrame); // First frame, blackBuffer
 
     void setBuffer2();
 protected:

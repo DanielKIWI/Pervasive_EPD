@@ -5,7 +5,9 @@
 #include "globalupdate_src/demoImageData.h"
 #include "fastupdate_src/demoImageData.h"
 
-#include "Pervasive_EPD.h"
+#include "../../esphome_/components/pervasive_display/Pervasive_EPD.h"
+
+//#include "Pervasive_EPD.h"
 #include "SPI.h"
 
 //Screen Options:
@@ -22,17 +24,19 @@
 //eScreen_EPD_417_KS_0D
 //eScreen_EPD_437_KS_0C
 
-Pervasive_EPD display(eScreen_EPD_417_KS_0D, 
-    32, 33,
-    4, 5, 25,
-    &SPI);
+Pervasive_EPD display(eScreen_EPD_417_KS_0D);
+//Pervasive_EPD display(eScreen_EPD_417_KS_0D, 
+//    32, 33,
+//    4, 5, 25,
+//    &SPI);
 
 void setup()
 {
     Serial.begin(115200);
     delay(1000);
     Serial.println("setup");
-    display.begin();
+    display.setup();
+#ifdef SAMPLE
     display.setRotation(1);
     delay(1000);
     //Serial.println("updateNormal");
@@ -119,6 +123,7 @@ void setup()
     // display.updateFast(FastPic_w, FastPic_b, frameSize);
     // delay(1000);
     // Serial.println("Fast Test 9");
+#endif
 }
 
 void loop()

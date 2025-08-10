@@ -176,47 +176,6 @@ int GetWidth(eScreen_EPD_t eScreen_EPD) {
 	}
 }
 
-//Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD, pins_t board, SPIClass* spi)
-Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD,
-	int width, int height,
-	int16_t DC, int16_t RST,
-	int16_t CS, int16_t SRCS, int16_t BUSY,
-	SPIClass* spi)
-	: Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-	u_eScreen_EPD = eScreen_EPD;
-
-	//b_pin = board;
-
-	//use_sram = SRCS >= 0;
-	use_sram = false;
-
-	if ((height % 8) != 0) {
-		height += 8 - (height % 8);
-	}
-
-	buffer1_size = width * height / 8;
-	buffer2_size = buffer1_size;
-	Serial.printf("buffer1_size: %i\n", buffer1_size);
-	if (use_sram) {
-		buffer1_addr = 0;
-		buffer2_addr = buffer1_size;
-		buffer1 = buffer2 = NULL;
-	}
-	else {
-		buffer1 = (uint8_t*)malloc(buffer1_size);
-		buffer2 = (uint8_t*)malloc(buffer2_size);
-	}
-
-	singleByteTxns = true;
-}
-
-Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD,
-	int16_t DC, int16_t RST,
-	int16_t CS, int16_t SRCS, int16_t BUSY,
-	SPIClass* spi)
-	: Pervasive_EPD(eScreen_EPD, GetWidth(eScreen_EPD), GeHeight(eScreen_EPD), DC, RST, CS, SRCS, BUSY, spi) {
-}
-
 void Pervasive_EPD::beginSPI(uint32_t speed)
 {
 	if (flagSPI != true)
@@ -729,7 +688,7 @@ void Pervasive_EPD::COG_initial(uint8_t updateMode)
 }
 
 
-void Pervasive_EPD::COG_sendImageDataNormal(FRAMEBUFFER_CONST_TYPE firstFrame, uint32_t sizeFrame) // First frame, blackBuffer
+void Pervasive_EPD::COG_sendImageDataNormal(uint8_t* firstFrame, uint32_t sizeFrame) // First frame, blackBuffer
 {
 	// firstFrame: New Image for NORMAL, Old Image for FAST
 	// secondFrame: 0x00 data for NORMAL, New Image for FAST
@@ -756,7 +715,7 @@ void Pervasive_EPD::COG_sendImageDataNormal(FRAMEBUFFER_CONST_TYPE firstFrame, u
 	} // u_eScreen_EPD
 }
 
-void Pervasive_EPD::COG_sendImageDataFast(FRAMEBUFFER_CONST_TYPE firstFrame, FRAMEBUFFER_CONST_TYPE secondFrame, uint32_t sizeFrame) // First frame, blackBuffer
+void Pervasive_EPD::COG_sendImageDataFast(uint8_t* firstFrame, uint8_t* secondFrame, uint32_t sizeFrame) // First frame, blackBuffer
 {
 	// firstFrame: New Image for NORMAL, Old Image for FAST
 	// secondFrame: 0x00 data for NORMAL, New Image for FAST
@@ -887,6 +846,49 @@ void Pervasive_EPD::busy_wait(void) {
 //    }
 //}
 
+
+
+//Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD, pins_t board, SPIClass* spi)
+Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD,
+	int width, int height,
+	int16_t DC, int16_t RST,
+	int16_t CS, int16_t SRCS, int16_t BUSY,
+	SPIClass* spi)
+	: Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
+	u_eScreen_EPD = eScreen_EPD;
+
+	//b_pin = board;
+
+	//use_sram = SRCS >= 0;
+	use_sram = false;
+
+	if ((height % 8) != 0) {
+		height += 8 - (height % 8);
+	}
+
+	buffer1_size = width * height / 8;
+	buffer2_size = buffer1_size;
+	Serial.printf("buffer1_size: %i\n", buffer1_size);
+	if (use_sram) {
+		buffer1_addr = 0;
+		buffer2_addr = buffer1_size;
+		buffer1 = buffer2 = NULL;
+	}
+	else {
+		buffer1 = (uint8_t*)malloc(buffer1_size);
+		buffer2 = (uint8_t*)malloc(buffer2_size);
+	}
+
+	singleByteTxns = true;
+}
+
+Pervasive_EPD::Pervasive_EPD(eScreen_EPD_t eScreen_EPD,
+	int16_t DC, int16_t RST,
+	int16_t CS, int16_t SRCS, int16_t BUSY,
+	SPIClass* spi)
+	: Pervasive_EPD(eScreen_EPD, GetWidth(eScreen_EPD), GeHeight(eScreen_EPD), DC, RST, CS, SRCS, BUSY, spi) {
+}
+
 /**************************************************************************/
 /*!
 	@brief begin communication with and set up the display.
@@ -984,12 +986,11 @@ void Pervasive_EPD::update() {
 	// Start SPI
 	beginSPI(SPI_FREQ); // Fast 16 MHz, with unicity check
 
-	if (useFastUpdate) {
+	if (useFastUpdate && !isFirstFrame) {
 		COG_initial(UPDATE_FAST); // Initialise
 		COG_sendImageDataFast(buffer1, buffer2, buffer1_size);
 
 		COG_update(UPDATE_FAST); // Update
-		setBuffer2();
 	}
 	else {
 		COG_initial(UPDATE_NORMAL); // Initialise
@@ -997,6 +998,7 @@ void Pervasive_EPD::update() {
 
 		COG_update(UPDATE_NORMAL); // Update
 	}
+	setBuffer2();
 
 	COG_stopDCDC(); // Power off
 
@@ -1009,6 +1011,7 @@ void Pervasive_EPD::setFastMode(bool fast) {
 }
 
 void Pervasive_EPD::setBuffer2() {
+	isFirstFrame = false;
 	for (int i = 0; i < buffer1_size; i++) {
 		buffer2[i] = buffer1[i];
 	}
