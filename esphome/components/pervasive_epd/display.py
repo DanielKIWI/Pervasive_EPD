@@ -92,7 +92,7 @@ FINAL_VALIDATE_SCHEMA = spi.final_validate_device_schema(
 
 
 async def to_code(config):
-    model_type, model = MODELS[config[CONF_MODEL]]
+    model = MODELS[config[CONF_MODEL]]
     rhs = Pervasive_EPD.new(model)
     var = cg.Pvariable(config[CONF_ID], rhs, Pervasive_EPD)
 
