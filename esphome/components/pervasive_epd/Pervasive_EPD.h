@@ -10,25 +10,26 @@
 namespace esphome {
 namespace pervasive_epd {
 
-    enum Pervasive_EPD_Model {
-        EPD_150_KS_0J = 0,
-        EPD_152_KS_0J,
-        EPD_154_KS_0C,
-        EPD_206_KS_0E,
-        EPD_213_KS_0E,
-        EPD_266_KS_0C,
-        EPD_271_KS_09,
-        EPD_271_KS_0C,
-        EPD_290_KS_0F,
-        EPD_370_KS_0C,
-        EPD_417_KS_0D,
-        EPD_437_KS_0C,
-    };
+enum Pervasive_EPD_Model {
+    EPD_150_KS_0J = 0,
+    EPD_152_KS_0J,
+    EPD_154_KS_0C,
+    EPD_206_KS_0E,
+    EPD_213_KS_0E,
+    EPD_266_KS_0C,
+    EPD_271_KS_09,
+    EPD_271_KS_0C,
+    EPD_290_KS_0F,
+    EPD_370_KS_0C,
+    EPD_417_KS_0D,
+    EPD_437_KS_0C,
+};
 
 public class Pervasive_EPD : public display::DisplayBuffer,
                             public spi::SPIDevice<spi::BIT_ORDER_MSB_FIRST, spi::CLOCK_POLARITY_LOW,
                                                   spi::CLOCK_PHASE_LEADING, spi::DATA_RATE_4MHZ> {
  public:
+
   Pervasive_EPD(Pervasive_EPD_Model model);
 
   void set_dc_pin(GPIOPin *dc_pin) { dc_pin_ = dc_pin; }
